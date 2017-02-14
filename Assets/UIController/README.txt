@@ -1,5 +1,9 @@
 # UIController Reference
 
+## About
+- Support: johnsoncodehk+support@gmail.com
+- GitHub: https://github.com/johnsoncodehk/unity-uicontroller
+
 ## Videos
 - Examples: https://youtu.be/AvHS_WsVhzQ
 - Tutorial: https://youtu.be/Y-2yhzTcvFU
