@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2733b13c6a19d4e0490f692933454fa6, type: 3}
+  m_Name: Setting
+  m_EditorClassIdentifier: 
+  controllers:
+  - {fileID: 9100000, guid: 96ed14593d92b4f7085689c4cd6d9f35, type: 2}
+  - {fileID: 9100000, guid: d51c60ec8fed74f2eb751747a1aabde3, type: 2}
+  transition:
+    exitTime: 0
+    duration: 0
