@@ -1,4 +1,4 @@
-﻿namespace UIControllerDemo {
+﻿namespace UIControllerExamples.Popup {
 
 	public class UIControllerExample : UIController {
 
@@ -51,14 +51,12 @@
 		public void Play () {
 			if (!this.isShow) {
 				// this.Show (); // No Callback
-
 				this.Show (() => {
 					print (this + ": OnShow (Callback)");
 				});
 			}
 			else {
 				// this.Hide (); // No Callback
-
 				this.Hide (() => {
 					print (this + ": OnHide (Callback)");
 				});

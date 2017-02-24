@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UIControllerDemo {
+namespace UIControllerExamples.Popup {
 
 	public class UIControllerExample8 : UIControllerExample {
 
