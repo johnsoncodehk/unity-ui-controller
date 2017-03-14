@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -20,14 +19,7 @@ public class UIControllerStateMachine : UnityEngine.StateMachineBehaviour {
 		if (this.normalizedTimes[stateInfo.fullPathHash] < 1 && stateInfo.normalizedTime >= 1) {
 			UIController uiController;
 			if (this.TryGetComponent<UIController> (animator.gameObject, out uiController)) {
-				uiController.StartCoroutine (this.WaitForEndOfFrame (() => {
-					if (stateInfo.IsName ("Show")) {
-						uiController.SendMessage ("OnShow");
-					}
-					else if (stateInfo.IsName ("Hide")) {
-						uiController.SendMessage ("OnHide");
-					}
-				}));
+				uiController.StartCoroutine (this.WaitForSendMessage (uiController, stateInfo));
 			}
 		}
 		this.normalizedTimes[stateInfo.fullPathHash] = stateInfo.normalizedTime;
@@ -41,8 +33,13 @@ public class UIControllerStateMachine : UnityEngine.StateMachineBehaviour {
 		t = outT;
 		return t != null;
 	}
-	private IEnumerator WaitForEndOfFrame (Action onWait) {
+	private IEnumerator WaitForSendMessage (UIController uiController, AnimatorStateInfo stateInfo) {
 		yield return new WaitForEndOfFrame ();
-		onWait ();
+		if (stateInfo.IsName ("Show")) {
+			uiController.SendMessage ("OnShow");
+		}
+		else if (stateInfo.IsName ("Hide")) {
+			uiController.SendMessage ("OnHide");
+		}
 	}
 }
