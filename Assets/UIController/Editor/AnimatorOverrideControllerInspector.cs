@@ -53,24 +53,25 @@ namespace UIControllerEditor {
 				overrideController.runtimeAnimatorController = controller;
 			}
 
-			foreach (AnimationClipPair clipPair in overrideController.clips) {
-				string overrideClipName = clipPair.originalClip.name.Replace ("Original", "");
+			var overrides = overrideController.GetOverridesUnite();
+			foreach (var clipPair in overrides) {
+				string overrideClipName = clipPair.Key.name.Replace ("Original", "");
 
 				List<AnimationClip> clips = AnimatorOverrideControllerInspector.GetIncludeAnimations (overrideController);
 				foreach (AnimationClip clip in clips) {
 					if (clip.name == overrideClipName) {
-						overrideController[clipPair.originalClip] = clip;
+						overrideController[clipPair.Key] = clip;
 						break;
 					}
 				}
 
-				if (overrideController[clipPair.originalClip] == clipPair.originalClip) {
+				if (overrideController[clipPair.Key] == clipPair.Key) {
 					AnimationClip overrideClip = new AnimationClip ();
-					EditorUtility.CopySerialized (clipPair.originalClip, overrideClip);
+					EditorUtility.CopySerialized (clipPair.Key, overrideClip);
 					overrideClip.name = overrideClipName;
 					overrideClip.hideFlags = HideFlags.HideInHierarchy;
 					AssetDatabase.AddObjectToAsset (overrideClip, overrideController);
-					overrideController[clipPair.originalClip] = overrideClip;
+					overrideController[clipPair.Key] = overrideClip;
 				}
 			}
 
@@ -85,14 +86,15 @@ namespace UIControllerEditor {
 				RuntimeAnimatorController controller = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController> (copyControllerPath);
 				AnimatorController animator = controller as AnimatorController;
 				AnimatorControllerLayer baseLayer = animator.layers[0];
-				foreach (var clipPair in overrideController.clips) {
+				var overrides = overrideController.GetOverridesUnite();
+				foreach (var clipPair in overrides) {
 					AnimationClip overrideClip = new AnimationClip ();
-					EditorUtility.CopySerialized (clipPair.overrideClip, overrideClip);
+					EditorUtility.CopySerialized (clipPair.Value, overrideClip);
 					overrideClip.hideFlags = HideFlags.None;
 					AssetDatabase.AddObjectToAsset (overrideClip, controller);
 					for (int i = 0; i < baseLayer.stateMachine.states.Length; i++) {
 						AnimatorState state = baseLayer.stateMachine.states[i].state;
-						if (state.motion == clipPair.originalClip) {
+						if (state.motion == clipPair.Key) {
 							state.motion = overrideClip;
 						}
 					}

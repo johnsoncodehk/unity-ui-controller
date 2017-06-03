@@ -35,11 +35,12 @@ namespace UIControllerEditor {
 		}
 		public static void FixAllOverrideControllers (UIControllerSetting setting) {
 			int fixCount = 0;
-			List<AnimatorOverrideController> all = FindAllOverrideControllers (setting);
-			foreach (var a in all) {
-				foreach (AnimationClipPair clipPair in a.clips) {
-					if (clipPair.originalClip == clipPair.overrideClip) {
-						AnimatorOverrideControllerInspector.SetupController (a);
+			List<AnimatorOverrideController> overrideControllers = FindAllOverrideControllers (setting);
+			foreach (var overrideController in overrideControllers) {
+				var overrides = overrideController.GetOverridesUnite();
+				foreach (var clipPair in overrides) {
+					if (clipPair.Key == clipPair.Value) {
+						AnimatorOverrideControllerInspector.SetupController (overrideController);
 						fixCount++;
 						break;
 					}
