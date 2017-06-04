@@ -9,37 +9,37 @@ namespace UIControllerEditor {
 
 		public static UIControllerSetting instance {
 			get {
-				var settings = AssetDatabase.FindAssets ("t:" + typeof (UIControllerSetting));
+				var settings = AssetDatabase.FindAssets("t:" + typeof(UIControllerSetting));
 				if (settings.Length == 0) {
 					return null;
 				}
-				return AssetDatabase.LoadAssetAtPath<UIControllerSetting> (AssetDatabase.GUIDToAssetPath (settings[0]));
+				return AssetDatabase.LoadAssetAtPath<UIControllerSetting>(AssetDatabase.GUIDToAssetPath(settings[0]));
 			}
 		}
 
 		[System.Serializable]
 		public struct Transition {
-			[Range (0, 1)]
+			[Range(0, 1)]
 			public float exitTime, duration;
 		}
 
-		public List<RuntimeAnimatorController> controllers = new List<RuntimeAnimatorController> ();
+		public List<RuntimeAnimatorController> controllers = new List<RuntimeAnimatorController>();
 		public Transition transition;
 
-		void OnValidate () {
+		void OnValidate() {
 			foreach (RuntimeAnimatorController controller in this.controllers) {
-				this.UpdateController (controller);
+				this.UpdateController(controller);
 			}
 		}
 
-		private void UpdateController (RuntimeAnimatorController controller) {
+		private void UpdateController(RuntimeAnimatorController controller) {
 			bool refresh = false;
 
 			AnimatorController animator = controller as AnimatorController;
 
 			var baseLayer = animator.layers[0];
 			foreach (var state in baseLayer.stateMachine.states) {
-				if (state.state.nameHash == Animator.StringToHash ("Init")) {
+				if (state.state.nameHash == Animator.StringToHash("Init")) {
 					continue;
 				}
 				foreach (var transition in state.state.transitions) {
@@ -58,8 +58,8 @@ namespace UIControllerEditor {
 			}
 
 			if (refresh) {
-				AssetDatabase.SaveAssets ();
-				AssetDatabase.Refresh ();
+				AssetDatabase.SaveAssets();
+				AssetDatabase.Refresh();
 			}
 		}
 	}
