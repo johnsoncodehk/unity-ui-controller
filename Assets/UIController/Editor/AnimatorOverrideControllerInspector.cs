@@ -4,60 +4,60 @@ using UnityEditor.Animations;
 using System.Collections.Generic;
 
 namespace UIControllerEditor {
-	[CanEditMultipleObjects, CustomEditor (typeof (AnimatorOverrideController))]
+	[CanEditMultipleObjects, CustomEditor(typeof(AnimatorOverrideController))]
 	public class AnimatorOverrideControllerInspector : DecoratorEditor {
 
-		public AnimatorOverrideControllerInspector () : base ("AnimatorOverrideControllerInspector") { }
+		public AnimatorOverrideControllerInspector() : base("AnimatorOverrideControllerInspector") { }
 
-		public override void OnInspectorGUI () {
-			base.OnInspectorGUI ();
+		public override void OnInspectorGUI() {
+			base.OnInspectorGUI();
 
 			var overrideController = this.target as AnimatorOverrideController;
 
-			List<AnimationClip> clips = AnimatorOverrideControllerInspector.GetIncludeAnimations (overrideController);
+			List<AnimationClip> clips = AnimatorOverrideControllerInspector.GetIncludeAnimations(overrideController);
 			if (clips.Count > 0) {
 				string names = clips[0].name;
 				for (int i = 1; i < clips.Count; i++) {
 					names += ", " + clips[i].name;
 				}
-				GUILayout.Label ("Include Animations: " + names);
+				GUILayout.Label("Include Animations: " + names);
 			}
 
 			foreach (var controller in UIControllerSetting.instance.controllers) {
-				if (GUILayout.Button ("Setup " + controller.name.Replace ("_", "->"))) {
-					AnimatorOverrideControllerInspector.SetupController (overrideController, controller);
+				if (GUILayout.Button("Setup " + controller.name.Replace("_", "->"))) {
+					AnimatorOverrideControllerInspector.SetupController(overrideController, controller);
 				}
 			}
-			GUILayout.Label ("");
+			GUILayout.Label("");
 
-			List<AnimationClip> unusedClips = AnimatorOverrideControllerInspector.GetUnusedAnimations (overrideController);
+			List<AnimationClip> unusedClips = AnimatorOverrideControllerInspector.GetUnusedAnimations(overrideController);
 			GUI.enabled = unusedClips.Count > 0;
-			if (GUILayout.Button ("Delete Unused Animations (" + unusedClips.Count + ")")) {
+			if (GUILayout.Button("Delete Unused Animations (" + unusedClips.Count + ")")) {
 				foreach (AnimationClip clip in unusedClips) {
-					Object.DestroyImmediate (clip, true);
+					Object.DestroyImmediate(clip, true);
 				}
-				AssetDatabase.SaveAssets ();
-				AssetDatabase.Refresh ();
+				AssetDatabase.SaveAssets();
+				AssetDatabase.Refresh();
 			}
 			GUI.enabled = true;
 
 			GUI.enabled = overrideController.runtimeAnimatorController != null;
-			if (GUILayout.Button ("Export to Animator")) {
-				AnimatorOverrideControllerInspector.ExportController (overrideController);
+			if (GUILayout.Button("Export to Animator")) {
+				AnimatorOverrideControllerInspector.ExportController(overrideController);
 			}
 			GUI.enabled = true;
 		}
 
-		public static void SetupController (AnimatorOverrideController overrideController, RuntimeAnimatorController controller = null) {
+		public static void SetupController(AnimatorOverrideController overrideController, RuntimeAnimatorController controller = null) {
 			if (controller != null) {
 				overrideController.runtimeAnimatorController = controller;
 			}
 
 			var overrides = overrideController.GetOverridesUnite();
 			foreach (var clipPair in overrides) {
-				string overrideClipName = clipPair.Key.name.Replace ("Original", "");
+				string overrideClipName = clipPair.Key.name.Replace("Original", "");
 
-				List<AnimationClip> clips = AnimatorOverrideControllerInspector.GetIncludeAnimations (overrideController);
+				List<AnimationClip> clips = AnimatorOverrideControllerInspector.GetIncludeAnimations(overrideController);
 				foreach (AnimationClip clip in clips) {
 					if (clip.name == overrideClipName) {
 						overrideController[clipPair.Key] = clip;
@@ -66,32 +66,32 @@ namespace UIControllerEditor {
 				}
 
 				if (overrideController[clipPair.Key] == clipPair.Key) {
-					AnimationClip overrideClip = new AnimationClip ();
-					EditorUtility.CopySerialized (clipPair.Key, overrideClip);
+					AnimationClip overrideClip = new AnimationClip();
+					EditorUtility.CopySerialized(clipPair.Key, overrideClip);
 					overrideClip.name = overrideClipName;
 					overrideClip.hideFlags = HideFlags.HideInHierarchy;
-					AssetDatabase.AddObjectToAsset (overrideClip, overrideController);
+					AssetDatabase.AddObjectToAsset(overrideClip, overrideController);
 					overrideController[clipPair.Key] = overrideClip;
 				}
 			}
 
-			AssetDatabase.SaveAssets ();
-			AssetDatabase.Refresh ();
+			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
 		}
-		private static void ExportController (AnimatorOverrideController overrideController) {
-			string overrideControllerPath = AssetDatabase.GetAssetPath (overrideController);
-			string controllerPath = AssetDatabase.GetAssetPath (overrideController.runtimeAnimatorController);
-			string copyControllerPath = overrideControllerPath.Replace (".overrideController", ".controller");
-			if (AssetDatabase.CopyAsset (controllerPath, copyControllerPath)) {
-				RuntimeAnimatorController controller = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController> (copyControllerPath);
+		private static void ExportController(AnimatorOverrideController overrideController) {
+			string overrideControllerPath = AssetDatabase.GetAssetPath(overrideController);
+			string controllerPath = AssetDatabase.GetAssetPath(overrideController.runtimeAnimatorController);
+			string copyControllerPath = overrideControllerPath.Replace(".overrideController", ".controller");
+			if (AssetDatabase.CopyAsset(controllerPath, copyControllerPath)) {
+				RuntimeAnimatorController controller = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(copyControllerPath);
 				AnimatorController animator = controller as AnimatorController;
 				AnimatorControllerLayer baseLayer = animator.layers[0];
 				var overrides = overrideController.GetOverridesUnite();
 				foreach (var clipPair in overrides) {
-					AnimationClip overrideClip = new AnimationClip ();
-					EditorUtility.CopySerialized (clipPair.Value, overrideClip);
+					AnimationClip overrideClip = new AnimationClip();
+					EditorUtility.CopySerialized(clipPair.Value, overrideClip);
 					overrideClip.hideFlags = HideFlags.None;
-					AssetDatabase.AddObjectToAsset (overrideClip, controller);
+					AssetDatabase.AddObjectToAsset(overrideClip, controller);
 					for (int i = 0; i < baseLayer.stateMachine.states.Length; i++) {
 						AnimatorState state = baseLayer.stateMachine.states[i].state;
 						if (state.motion == clipPair.Key) {
@@ -100,27 +100,27 @@ namespace UIControllerEditor {
 					}
 				}
 			}
-			AssetDatabase.SaveAssets ();
-			AssetDatabase.Refresh ();
+			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
 		}
-		private static List<AnimationClip> GetIncludeAnimations (Object obj) {
-			System.Collections.Generic.List<AnimationClip> clips = new System.Collections.Generic.List<AnimationClip> ();
-			Object[] subs = AssetDatabase.LoadAllAssetsAtPath (AssetDatabase.GetAssetPath (obj));
+		private static List<AnimationClip> GetIncludeAnimations(Object obj) {
+			System.Collections.Generic.List<AnimationClip> clips = new System.Collections.Generic.List<AnimationClip>();
+			Object[] subs = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(obj));
 			foreach (Object sub in subs) {
 				AnimationClip clip = sub as AnimationClip;
 				if (clip != null) {
-					clips.Add (clip);
+					clips.Add(clip);
 				}
 			}
 			return clips;
 		}
-		private static List<AnimationClip> GetUnusedAnimations (AnimatorOverrideController controller) {
-			List<AnimationClip> unusedClips = new List<AnimationClip> ();
+		private static List<AnimationClip> GetUnusedAnimations(AnimatorOverrideController controller) {
+			List<AnimationClip> unusedClips = new List<AnimationClip>();
 
-			List<AnimationClip> includeClips = AnimatorOverrideControllerInspector.GetIncludeAnimations (controller);
+			List<AnimationClip> includeClips = AnimatorOverrideControllerInspector.GetIncludeAnimations(controller);
 			foreach (AnimationClip includeClip in includeClips) {
-				if (!new List<AnimationClip> (controller.animationClips).Contains (includeClip)) {
-					unusedClips.Add (includeClip);
+				if (!new List<AnimationClip>(controller.animationClips).Contains(includeClip)) {
+					unusedClips.Add(includeClip);
 				}
 			}
 
