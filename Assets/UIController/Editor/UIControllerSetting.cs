@@ -19,8 +19,7 @@ namespace UIControllerEditor {
 
 		[System.Serializable]
 		public struct Transition {
-			[Range(0, 1)]
-			public float exitTime, duration;
+			[Range(0, 1)] public float exitTime, duration;
 		}
 
 		public List<RuntimeAnimatorController> controllers = new List<RuntimeAnimatorController>();
