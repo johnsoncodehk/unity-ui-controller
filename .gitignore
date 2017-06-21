@@ -37,6 +37,7 @@ Temporary Items
 /Assets/AssetStoreTools*
 ExportedObj/
 .consulo/
+.vscode/
 *.csproj
 *.unityproj
 *.sln
@@ -50,4 +51,3 @@ ExportedObj/
 *.pidb.meta
 sysinfo.txt
 *.apk
-*.unitypackage
