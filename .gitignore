@@ -51,3 +51,7 @@ ExportedObj/
 *.pidb.meta
 sysinfo.txt
 *.apk
+
+# Project
+Assets/UIController/Examples/
+Assets/UIController/Examples.meta
