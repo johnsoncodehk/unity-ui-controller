@@ -19,7 +19,7 @@ public class UIControllerStateMachine : UnityEngine.StateMachineBehaviour {
 		if (this.normalizedTimes[stateInfo.fullPathHash] < 1 && stateInfo.normalizedTime >= 1) {
 			UIController uiController;
 			if (this.TryGetComponent<UIController>(animator.gameObject, out uiController)) {
-				uiController.StartCoroutine(this.WaitForSendMessage(uiController, stateInfo));
+				uiController.StartCoroutine(this.WaitToSendMessage(uiController, stateInfo));
 			}
 		}
 		this.normalizedTimes[stateInfo.fullPathHash] = stateInfo.normalizedTime;
@@ -33,7 +33,7 @@ public class UIControllerStateMachine : UnityEngine.StateMachineBehaviour {
 		t = outT;
 		return t != null;
 	}
-	private IEnumerator WaitForSendMessage(UIController uiController, AnimatorStateInfo stateInfo) {
+	private IEnumerator WaitToSendMessage(UIController uiController, AnimatorStateInfo stateInfo) {
 		yield return new WaitForEndOfFrame();
 		if (stateInfo.IsName("Show")) {
 			uiController.SendMessage("OnShow");
