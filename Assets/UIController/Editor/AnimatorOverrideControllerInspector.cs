@@ -69,7 +69,6 @@ namespace UIControllerEditor {
 					AnimationClip overrideClip = new AnimationClip();
 					EditorUtility.CopySerialized(clipPair.Key, overrideClip);
 					overrideClip.name = overrideClipName;
-					overrideClip.hideFlags = HideFlags.HideInHierarchy;
 					AssetDatabase.AddObjectToAsset(overrideClip, overrideController);
 					overrideController[clipPair.Key] = overrideClip;
 				}
