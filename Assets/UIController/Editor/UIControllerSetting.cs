@@ -17,8 +17,7 @@ namespace UIControllerEditor {
 			}
 		}
 
-		[System.Serializable]
-		public struct Transition {
+		[System.Serializable] public struct Transition {
 			[Range(0, 1)] public float exitTime, duration;
 		}
 
@@ -32,8 +31,6 @@ namespace UIControllerEditor {
 		}
 
 		private void UpdateController(RuntimeAnimatorController controller) {
-			bool refresh = false;
-
 			AnimatorController animator = controller as AnimatorController;
 
 			var baseLayer = animator.layers[0];
@@ -54,11 +51,6 @@ namespace UIControllerEditor {
 					transition.hasFixedDuration = false;
 					transition.duration = this.transition.duration;
 				}
-			}
-
-			if (refresh) {
-				AssetDatabase.SaveAssets();
-				AssetDatabase.Refresh();
 			}
 		}
 	}
