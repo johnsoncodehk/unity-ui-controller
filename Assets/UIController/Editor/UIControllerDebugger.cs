@@ -30,13 +30,13 @@ namespace UIControllerEditor {
 				}
 			}
 			if (fixCount > 0) {
-				UIControllerDebugger.LogWarning(1, fixCount + " Controllers is Fix.");
+				UIControllerDebugger.LogMessage(1, fixCount + " controllers UIControllerStateMachine missing is fix.");
 			}
 		}
 		public static void FixAllOverrideControllers(UIControllerSetting setting) {
 			List<AnimatorOverrideController> overrideControllers = FindAllOverrideControllers(setting);
 			UIControllerDebugger.FixAnimationsNotSet(overrideControllers);
-			UIControllerDebugger.FixAnimationsHide(overrideControllers);
+			UIControllerDebugger.FixAnimationsHideFlags(overrideControllers, setting.overrideAnimationsHideFlags);
 			UIControllerDebugger.FixControllerMainObject(overrideControllers);
 		}
 		public static List<AnimatorOverrideController> FindAllOverrideControllers(UIControllerSetting setting) {
@@ -68,20 +68,20 @@ namespace UIControllerEditor {
 			}
 
 			if (fixCount > 0) {
-				UIControllerDebugger.LogWarning(2, fixCount + " Override Controllers is Fix.");
+				UIControllerDebugger.LogMessage(2, fixCount + " override controllers no override animation is fix.");
 			}
 		}
-		private static void FixAnimationsHide(List<AnimatorOverrideController> overrideControllers) {
+		public static void FixAnimationsHideFlags(List<AnimatorOverrideController> overrideControllers, HideFlags hideFlags) {
 			int fixCount = 0;
 
 			foreach (var overrideController in overrideControllers) {
 #if !(UNITY_5_5 || UNITY_5_4 || UNITY_5_3 || UNITY_5_2 || UNITY_5_1 || UNITY_5_0 || UNITY_4)
 				List<AnimationClip> clips = AnimatorOverrideControllerInspector.GetIncludeAnimations(overrideController);
 				foreach (AnimationClip clip in clips) {
-					if (clip.hideFlags == HideFlags.None) {
+					if (clip.hideFlags == hideFlags) {
 						continue;
 					}
-					clip.hideFlags = HideFlags.None;
+					clip.hideFlags = hideFlags;
 					EditorUtility.SetDirty(clip);
 					fixCount++;
 				}
@@ -91,31 +91,31 @@ namespace UIControllerEditor {
 			if (fixCount > 0) {
 				AssetDatabase.SaveAssets();
 				AssetDatabase.Refresh();
-				UIControllerDebugger.LogWarning(3, fixCount + " Override Controllers is Fix.");
+				UIControllerDebugger.LogMessage(3, fixCount + " override animations Hide Flags is set to " + hideFlags + ".");
 			}
 		}
 		private static void FixControllerMainObject(List<AnimatorOverrideController> overrideControllers) {
+#if !(UNITY_5_5 || UNITY_5_4 || UNITY_5_3 || UNITY_5_2 || UNITY_5_1 || UNITY_5_0 || UNITY_4)
 			int fixCount = 0;
 
 			foreach (var overrideController in overrideControllers) {
-#if !(UNITY_5_5 || UNITY_5_4 || UNITY_5_3 || UNITY_5_2 || UNITY_5_1 || UNITY_5_0 || UNITY_4)
 				if (!AssetDatabase.IsMainAsset(overrideController)) {
 					AssetDatabase.SetMainObject(overrideController, AssetDatabase.GetAssetPath(overrideController));
 					EditorUtility.SetDirty(overrideController);
 					fixCount++;
 				}
-#endif
 			}
 
 			if (fixCount > 0) {
 				AssetDatabase.SaveAssets();
 				AssetDatabase.Refresh();
-				UIControllerDebugger.LogWarning(4, fixCount + " Override Controllers is Fix.");
+				UIControllerDebugger.LogMessage(4, fixCount + " override controllers Main Object is set.");
 			}
+#endif
 		}
-		private static void LogWarning(int code, string message) {
-			Debug.LogWarning(
-				"[UI Controller Warning] "
+		private static void LogMessage(int code, string message) {
+			Debug.Log(
+				"[UI Controller] "
 				+ "Code: " + code
 				+ ", Message: " + message
 				+ "\nSupport: https://github.com/johnsoncodehk/unity-uicontroller/issues"

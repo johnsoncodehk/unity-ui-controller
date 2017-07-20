@@ -17,20 +17,38 @@ namespace UIControllerEditor {
 			}
 		}
 
-		[System.Serializable] public struct Transition {
+		[System.Serializable]
+		public struct Transition {
 			[Range(0, 1)] public float exitTime, duration;
+		}
+		
+		public HideFlags overrideAnimationsHideFlags {
+			get {
+				return this.hideOverrideAnimations ? HideFlags.HideInHierarchy : HideFlags.None;
+			}
 		}
 
 		public List<RuntimeAnimatorController> controllers = new List<RuntimeAnimatorController>();
 		public Transition transition;
+		public bool hideOverrideAnimations;
+
+		private Transition m_Transition;
+		private bool m_HideOverrideAnimations;
 
 		void OnValidate() {
-			foreach (RuntimeAnimatorController controller in this.controllers) {
-				this.UpdateController(controller);
+			if (this.transition.exitTime != this.m_Transition.exitTime || this.transition.duration != this.m_Transition.duration) {
+				this.m_Transition = this.transition;
+				foreach (RuntimeAnimatorController controller in this.controllers) {
+					this.UpdateControllerTransition(controller);
+				}
+			}
+			if (this.hideOverrideAnimations != this.m_HideOverrideAnimations) {
+				this.m_HideOverrideAnimations = this.hideOverrideAnimations;
+				UIControllerDebugger.FixAnimationsHideFlags(UIControllerDebugger.FindAllOverrideControllers(this), this.overrideAnimationsHideFlags);
 			}
 		}
 
-		private void UpdateController(RuntimeAnimatorController controller) {
+		private void UpdateControllerTransition(RuntimeAnimatorController controller) {
 			AnimatorController animator = controller as AnimatorController;
 
 			var baseLayer = animator.layers[0];

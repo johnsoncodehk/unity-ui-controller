@@ -17,3 +17,4 @@ MonoBehaviour:
   transition:
     exitTime: 0
     duration: 0
+  hideOverrideAnimations: 0
