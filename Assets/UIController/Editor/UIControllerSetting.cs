@@ -24,7 +24,11 @@ namespace UIControllerEditor {
 		
 		public HideFlags overrideAnimationsHideFlags {
 			get {
+#if UNITY_5_5 || UNITY_5_4 || UNITY_5_3 || UNITY_5_2 || UNITY_5_1 || UNITY_5_0 || UNITY_4
+				return HideFlags.HideInHierarchy;
+#else
 				return this.hideOverrideAnimations ? HideFlags.HideInHierarchy : HideFlags.None;
+#endif
 			}
 		}
 
@@ -44,7 +48,9 @@ namespace UIControllerEditor {
 			}
 			if (this.hideOverrideAnimations != this.m_HideOverrideAnimations) {
 				this.m_HideOverrideAnimations = this.hideOverrideAnimations;
-				UIControllerDebugger.FixAnimationsHideFlags(UIControllerDebugger.FindAllOverrideControllers(this), this.overrideAnimationsHideFlags);
+				List<AnimatorOverrideController> overrideControllers = UIControllerDebugger.FindAllOverrideControllers(this);
+				UIControllerSetting.UpdateAnimationsHideFlags(overrideControllers, this.overrideAnimationsHideFlags);
+				UIControllerDebugger.FixControllerMainObject(overrideControllers);
 			}
 		}
 
@@ -69,6 +75,29 @@ namespace UIControllerEditor {
 					transition.hasFixedDuration = false;
 					transition.duration = this.transition.duration;
 				}
+			}
+		}
+		private static void UpdateAnimationsHideFlags(List<AnimatorOverrideController> overrideControllers, HideFlags hideFlags) {
+			int fixCount = 0;
+
+			foreach (var overrideController in overrideControllers) {
+#if !(UNITY_5_5 || UNITY_5_4 || UNITY_5_3 || UNITY_5_2 || UNITY_5_1 || UNITY_5_0 || UNITY_4)
+				List<AnimationClip> clips = AnimatorOverrideControllerInspector.GetIncludeAnimations(overrideController);
+				foreach (AnimationClip clip in clips) {
+					if (clip.hideFlags == hideFlags) {
+						continue;
+					}
+					clip.hideFlags = hideFlags;
+					EditorUtility.SetDirty(clip);
+					fixCount++;
+				}
+#endif
+			}
+
+			if (fixCount > 0) {
+				AssetDatabase.SaveAssets();
+				AssetDatabase.Refresh();
+				UIControllerDebugger.LogMessage(3, fixCount + " override animations Hide Flags is set to " + hideFlags + ".");
 			}
 		}
 	}
