@@ -1,9 +1,10 @@
 # UIController Reference
 
-## About
+## Links
 - [Asset Store](http://u3d.as/B5u)
-- [Email Support](mailto:johnsoncodehk+support@gmail.com)
 - [GitHub](https://github.com/johnsoncodehk/unity-ui-controller)
+- [Forum](https://github.com/johnsoncodehk/unity-ui-controller/issues)
+- [Support Email](mailto:johnsoncodehk+support@gmail.com)
 
 ## Videos
 - [Examples](https://youtu.be/AvHS_WsVhzQ)
@@ -18,6 +19,8 @@
 1. Click "Show / Hide" On UIController component with Playing Mode to test animations.
 
 ## Variables
+- showOnAwake
+	- If enabled, show animation will start playing when GameObject enable.
 - onHideAction
 	- A enum value of action to on hide
 	- None: No action.
@@ -49,27 +52,27 @@
 ## Code Examples
 - Play "Show" animation
 ```csharp
-	[RequireComponent (typeof (UIController))]
-	public class MyPanel : MonoBehaviour {
-		void Start () {
-			this.GetComponent<UIController> ().Show ();
-		}
+[RequireComponent(typeof(UIController))]
+public class MyPanel : MonoBehaviour {
+	void Start() {
+		this.GetComponent<UIController>().Show();
 	}
+}
 ```
 ```csharp
-	public class MyPanel : UIController {
-		void Start () {
-			this.Show ();
-		}
+public class MyPanel : UIController {
+	void Start() {
+		this.Show();
 	}
+}
 ```
 - Add "Show" animation end event
 ```csharp
-	public class MyPanel : UIController {
-		void Start () {
-			this.onShow.AddListener (() => {
-				print ("Show animation end.");
-			});
-		}
+public class MyPanel : UIController {
+	void Start() {
+		this.onShow.AddListener(() => {
+			print("Show animation end.");
+		});
 	}
+}
 ```
