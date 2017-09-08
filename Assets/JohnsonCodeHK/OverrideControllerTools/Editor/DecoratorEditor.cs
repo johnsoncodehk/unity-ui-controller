@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace UIControllerEditor {
+namespace JohnsonCodeHK.OverrideControllerToolsEditor {
 	/// <summary>
 	/// A base class for creating editors that decorate Unity's built-in editor types.
 	/// </summary>

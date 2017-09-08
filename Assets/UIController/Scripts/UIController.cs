@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour {
 		Destory,
 	}
 
+	public bool showOnAwake = true;
 	public OnHideAction onHideAction = OnHideAction.Disable;
 
 	[SerializeField] private UnityEvent m_OnShow = new UnityEvent();
@@ -19,6 +20,7 @@ public class UIController : MonoBehaviour {
 	private UnityEvent m_DisposableOnHide = new UnityEvent();
 	private Animator m_Animator;
 	private Vector3 m_TempSaveScale;
+	private bool m_IsShow;
 
 	public UnityEvent onShow {
 		get { return this.m_OnShow; }
@@ -30,12 +32,10 @@ public class UIController : MonoBehaviour {
 	}
 	public bool isShow {
 		get {
-			if (this.animator.runtimeAnimatorController == null) {
-				return this.gameObject.activeSelf;
-			}
-			return this.animator.isInitialized && this.animator.GetBool("isShow");
+			return this.m_IsShow;
 		}
 		private set {
+			this.m_IsShow = value;
 			if (this.animator.runtimeAnimatorController == null) {
 				this.gameObject.SetActive(value);
 				if (value) {
@@ -47,7 +47,12 @@ public class UIController : MonoBehaviour {
 				return;
 			}
 			if (this.animator.isInitialized) {
-				this.animator.SetBool("isShow", value);
+				if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Init")) {
+					this.animator.Play(value ? "Show" : "Hide");
+				}
+				else {
+					this.animator.SetTrigger(value ? "Show" : "Hide");
+				}
 			}
 		}
 	}
@@ -96,7 +101,7 @@ public class UIController : MonoBehaviour {
 		this.m_DisposableOnShow.RemoveAllListeners();
 	}
 	protected virtual void OnHide() {
-		if (!this.animator.GetBool("isShow")) {
+		if (!this.animator.GetBool("Show")) {
 			switch (this.onHideAction) {
 				case UIController.OnHideAction.None:
 					break;

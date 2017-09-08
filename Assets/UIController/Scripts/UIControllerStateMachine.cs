@@ -11,7 +11,9 @@ public class UIControllerStateMachine : UnityEngine.StateMachineBehaviour {
 		if (stateInfo.IsName("Init")) {
 			UIController uiController;
 			if (this.TryGetComponent<UIController>(animator.gameObject, out uiController)) {
-				uiController.animator.SetBool("isShow", uiController.onHideAction != UIController.OnHideAction.None);
+				if (uiController.showOnAwake) {
+					uiController.Show();
+				}
 			}
 		}
 	}
