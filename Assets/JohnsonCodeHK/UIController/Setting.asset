@@ -17,3 +17,4 @@ MonoBehaviour:
   transition:
     exitTime: 0
     duration: 0
+    canTransitionToSelf: 1

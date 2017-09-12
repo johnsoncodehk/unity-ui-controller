@@ -20,7 +20,6 @@ public class UIController : MonoBehaviour {
 	private UnityEvent m_DisposableOnHide = new UnityEvent();
 	private Animator m_Animator;
 	private Vector3 m_TempSaveScale;
-	private bool m_IsShow;
 
 	public UnityEvent onShow {
 		get { return this.m_OnShow; }
@@ -32,12 +31,17 @@ public class UIController : MonoBehaviour {
 	}
 	public bool isShow {
 		get {
-			return this.m_IsShow;
+			if (this.animator.runtimeAnimatorController == null) {
+				return this.gameObject.activeSelf;
+			}
+			if (!this.animator.isInitialized) {
+				return false;
+			}
+			AnimatorStateInfo currentState = this.animator.GetCurrentAnimatorStateInfo(0);
+			return currentState.IsName("Show") || currentState.IsName("OnShow");
 		}
 		private set {
-			this.m_IsShow = value;
 			if (this.animator.runtimeAnimatorController == null) {
-				this.gameObject.SetActive(value);
 				if (value) {
 					this.OnShow();
 				}
@@ -46,21 +50,21 @@ public class UIController : MonoBehaviour {
 				}
 				return;
 			}
-			if (this.animator.isInitialized) {
-				if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Init")) {
-					this.animator.Play(value ? "Show" : "Hide");
-				}
-				else {
-					this.animator.SetTrigger(value ? "Show" : "Hide");
-				}
+			if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Init")) {
+				this.animator.Play(value ? "Show" : "Hide");
+			}
+			else {
+				this.animator.SetTrigger(value ? "Show" : "Hide");
 			}
 		}
 	}
 	public bool isPlaying {
 		get {
-			var currentState = this.animator.GetCurrentAnimatorStateInfo(0);
-			return this.animator.isInitialized
-				&& (currentState.IsName("Show") || currentState.IsName("Hide"))
+			if (!this.isValidController) {
+				return false;
+			}
+			AnimatorStateInfo currentState = this.animator.GetCurrentAnimatorStateInfo(0);
+			return (currentState.IsName("Show") || currentState.IsName("Hide"))
 				&& currentState.normalizedTime < 1;
 		}
 	}
@@ -72,27 +76,57 @@ public class UIController : MonoBehaviour {
 			return this.m_Animator;
 		}
 	}
+	private bool canTransitionToSelf {
+		get {
+			if (!this.isValidController) {
+				return false;
+			}
+			return this.animator.GetBool("Can Transition To Self");
+		}
+	}
+	private bool isValidController {
+		get {
+			return this.animator.runtimeAnimatorController != null && this.animator.isInitialized;
+		}
+	}
 
 	// Show/Hide must fast by Show(UnityAction)Hide(UnityAction), make SendMessage("Show/Hide") working in Inspector
 	public virtual void Show() {
-		bool active = this.gameObject.activeSelf;
+		if (!this.canTransitionToSelf && this.isShow) {
+			if (!this.isPlaying) {
+				this.OnShow();
+			}
+			return;
+		}
+		bool activeSelf = this.gameObject.activeSelf;
 
 		this.gameObject.SetActive(true);
 		this.isShow = true;
 
-		if (!active && this.gameObject.activeInHierarchy) {
-			this.TrySaveScale();
-			StartCoroutine(this.TryRevertScale());
+		if (this.animator.runtimeAnimatorController != null && !activeSelf && this.gameObject.activeInHierarchy) {
+			StartCoroutine(this.SaveAndRevertScale());
 		}
 	}
 	public virtual void Hide() {
+		if (!this.canTransitionToSelf && !this.isShow) {
+			if (!this.isPlaying) {
+				this.OnHide();
+			}
+			return;
+		}
 		this.isShow = false;
 	}
 	public void Show(UnityAction onShow) {
-		this.ShowHideWithAction(true, onShow, this.m_DisposableOnShow, this.Show);
+		if (onShow != null) {
+			m_DisposableOnShow.AddListener(onShow);
+		}
+		this.Show();
 	}
 	public void Hide(UnityAction onHide) {
-		this.ShowHideWithAction(false, onHide, this.m_DisposableOnHide, this.Hide);
+		if (onHide != null) {
+			m_DisposableOnHide.AddListener(onHide);
+		}
+		this.Hide();
 	}
 
 	protected virtual void OnShow() {
@@ -101,7 +135,7 @@ public class UIController : MonoBehaviour {
 		this.m_DisposableOnShow.RemoveAllListeners();
 	}
 	protected virtual void OnHide() {
-		if (!this.animator.GetBool("Show")) {
+		if (!this.isValidController || !this.animator.GetBool("Show")) {
 			switch (this.onHideAction) {
 				case UIController.OnHideAction.None:
 					break;
@@ -118,30 +152,15 @@ public class UIController : MonoBehaviour {
 		this.m_DisposableOnHide.RemoveAllListeners();
 	}
 
-	private void TrySaveScale() {
+	private IEnumerator SaveAndRevertScale() {
 		if (this.transform.localScale != Vector3.zero) {
 			this.m_TempSaveScale = this.transform.localScale;
 			this.transform.localScale = Vector3.zero;
 		}
-	}
-	private IEnumerator TryRevertScale() {
 		yield return new WaitForEndOfFrame();
 		if (this.m_TempSaveScale != Vector3.zero) {
 			this.transform.localScale = this.m_TempSaveScale;
 			this.m_TempSaveScale = Vector3.zero;
-		}
-	}
-	private void ShowHideWithAction(bool isShowAction, UnityAction onAction, UnityEvent onActionEvent, System.Action action) {
-		if (isShowAction == this.isShow && !this.isPlaying) {
-			if (onAction != null) {
-				onAction();
-			}
-		}
-		else {
-			if (onAction != null) {
-				onActionEvent.AddListener(onAction);
-			}
-			action();
 		}
 	}
 }
