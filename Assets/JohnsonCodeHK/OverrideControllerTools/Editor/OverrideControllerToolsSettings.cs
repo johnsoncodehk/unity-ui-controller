@@ -8,15 +8,15 @@ namespace JohnsonCodeHK.OverrideControllerToolsEditor {
 		HideInHierarchy,
 	}
 
-	public class OverrideControllerToolsSetting : ScriptableObject {
+	public class OverrideControllerToolsSettings : ScriptableObject {
 
-		public static OverrideControllerToolsSetting instance {
+		public static OverrideControllerToolsSettings instance {
 			get {
-				var settings = AssetDatabase.FindAssets("t:" + typeof(OverrideControllerToolsSetting));
+				var settings = AssetDatabase.FindAssets("t:" + typeof(OverrideControllerToolsSettings));
 				if (settings.Length == 0) {
 					return null;
 				}
-				return AssetDatabase.LoadAssetAtPath<OverrideControllerToolsSetting>(AssetDatabase.GUIDToAssetPath(settings[0]));
+				return AssetDatabase.LoadAssetAtPath<OverrideControllerToolsSettings>(AssetDatabase.GUIDToAssetPath(settings[0]));
 			}
 		}
 
@@ -28,10 +28,10 @@ namespace JohnsonCodeHK.OverrideControllerToolsEditor {
 		public RuntimeAnimatorController[] quickSetupControllers = new RuntimeAnimatorController[0];
 		public StringReplace[] animationNameReplaces = new StringReplace[0];
 		public StringReplace[] quickSetupControllerNameReplaces = new StringReplace[0];
-		public AnimationsHideFlags defaultAnimationsHideFlags = AnimationsHideFlags.None;
-		public HideFlags animationsHideFlags {
+		public AnimationsHideFlags overrideAnimationHideFlags = AnimationsHideFlags.None;
+		public HideFlags animationHideFlags {
 			get {
-				return this.defaultAnimationsHideFlags == AnimationsHideFlags.HideInHierarchy ? HideFlags.HideInHierarchy : HideFlags.None;
+				return this.overrideAnimationHideFlags == AnimationsHideFlags.HideInHierarchy ? HideFlags.HideInHierarchy : HideFlags.None;
 			}
 		}
 	}

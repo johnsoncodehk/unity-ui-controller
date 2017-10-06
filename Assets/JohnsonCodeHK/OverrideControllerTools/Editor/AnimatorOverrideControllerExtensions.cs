@@ -96,13 +96,13 @@ namespace JohnsonCodeHK.OverrideControllerToolsEditor {
 #endif
 			foreach (AnimationClip clip in originalClips) {
 				string overrideClipName = clip.name;
-				foreach (var strReplace in OverrideControllerToolsSetting.instance.animationNameReplaces) {
+				foreach (var strReplace in OverrideControllerToolsSettings.instance.animationNameReplaces) {
 					overrideClipName = overrideClipName.Replace(strReplace.oldValue, strReplace.newValue);
 				}
 				AnimationClip overrideClip = new AnimationClip();
 				EditorUtility.CopySerialized(clip, overrideClip);
 				overrideClip.name = overrideClipName;
-				overrideClip.hideFlags = OverrideControllerToolsSetting.instance.animationsHideFlags;
+				overrideClip.hideFlags = OverrideControllerToolsSettings.instance.animationHideFlags;
 				AssetDatabase.AddObjectToAsset(overrideClip, overrideController);
 				overrideController[clip] = overrideClip;
 			}

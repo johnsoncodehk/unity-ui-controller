@@ -27,7 +27,7 @@ namespace JohnsonCodeHK.OverrideControllerToolsEditor {
 
 				Dictionary<string, List<RuntimeAnimatorController>> qscs = new Dictionary<string, List<RuntimeAnimatorController>>();
 
-				foreach (var controller in OverrideControllerToolsSetting.instance.quickSetupControllers) {
+				foreach (var controller in OverrideControllerToolsSettings.instance.quickSetupControllers) {
 					if (controller == null) {
 						continue;
 					}
@@ -47,7 +47,7 @@ namespace JohnsonCodeHK.OverrideControllerToolsEditor {
 						EditorGUI.indentLevel++;
 						foreach (var controller in kvp.Value) {
 							string controllerName = controller.name;
-							foreach (var replace in OverrideControllerToolsSetting.instance.quickSetupControllerNameReplaces) {
+							foreach (var replace in OverrideControllerToolsSettings.instance.quickSetupControllerNameReplaces) {
 								controllerName = controllerName.Replace(replace.oldValue, replace.newValue);
 							}
 							this.DrawButton(

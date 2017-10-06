@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 namespace JohnsonCodeHK.UIControllerEditor {
 
-	public class UIControllerSetting : ScriptableObject {
+	public class UIControllerSettings : ScriptableObject {
 
-		public static UIControllerSetting instance {
+		public static UIControllerSettings instance {
 			get {
-				var settings = AssetDatabase.FindAssets("t:" + typeof(UIControllerSetting));
+				var settings = AssetDatabase.FindAssets("t:" + typeof(UIControllerSettings));
 				if (settings.Length == 0) {
 					return null;
 				}
-				return AssetDatabase.LoadAssetAtPath<UIControllerSetting>(AssetDatabase.GUIDToAssetPath(settings[0]));
+				return AssetDatabase.LoadAssetAtPath<UIControllerSettings>(AssetDatabase.GUIDToAssetPath(settings[0]));
 			}
 		}
 
