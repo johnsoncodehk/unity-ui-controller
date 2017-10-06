@@ -1,0 +1,94 @@
+Version 2.2.3
+Remove:
+- UIControllerDebugger
+Fix:
+- Quick Setup menu display
+- HideFlags setting do not display with Unity 5.5.x lower
+- If Show and Hide call in one frame, animation will not start play.
+- canTransitionToSelf setting not working
+- UIController.isShow update has delay
+Change:
+- UIController settings is not support with Free version now
+- Directory changes
+- Setting scripts and assets rename
+
+Version 2.1
+Fix:
+- UIController某些情況下屬性錯誤
+Add:
+- Setting增加canTransitionToSelf 屬性
+
+Version 2.0
+Change:
+- Folder path
+Add:
+- Override Controller Tools
+- UIController.showOnAwake
+Fix:
+- 狀態機在某些情況下無法切換狀態
+
+Version 1.5.2
+Fix:
+- Unity 5.5或以下改為無視Hide Flags設定
+- 新建Controller沒有套用hide flags setting
+- Delete Examples folder
+Change:
+- Hide flags不再隨時刷新,只會在更改setting時刷新
+- Main Object現在只會在值為null時自動設定
+
+Version 1.5.1
+Add:
+- Override animations hide flags setting
+
+Version 1.5.0
+Change:
+- animation clip改為不隱藏 (需要Unity 5.6以上)
+
+Version 1.4.2
+Fix:
+- Unity 5.6 Warnings
+
+Version 1.4.1
+Fix:
+- OnShow animation not looping
+- A issues: https://github.com/johnsoncodehk/unity-uicontroller/issues/1
+
+Version 1.4.0
+Change:
+- delete DLL file and add cs file
+- Debugger is auto now
+Fix:
+- 動畫完成狀態調用Show/Hide(UnityAction)時，改為立即回調
+Add:
+- CSS Example
+
+Version 1.3.2
+Remove:
+- 刪除Show Controller
+Add:
+- UIController Debugger
+Fix:
+- onHideAction為None時,不再自動開始動畫
+
+Version 1.3.1
+Fix:
+- hideAction為None時,Show第一幀會消失
+- AnimatorController為null時,UIController無法使用
+- Example scripts增加namespace
+Add:
+- (Example) Show->Hide 8
+- (Example) Show->OnShow->Hide 1
+
+Version 1.3.0
+Fix:
+- 不在EndFrame時調用Show第一幀不會開始動畫
+Add:
+- Export to Animator Button
+- Delete Unused Animations Button
+- Show->OnShow->Hide Controller
+- Settings asset
+- Exit time Setting
+- Duration Setting
+
+Version 1.0
+First Release
