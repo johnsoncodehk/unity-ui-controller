@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb90e49b97362b244ba123c8bf3f1c22, type: 3}
-  m_Name: Setting
+  m_Name: Settings
   m_EditorClassIdentifier: 
   quickSetupControllers:
   - {fileID: 9100000, guid: 96ed14593d92b4f7085689c4cd6d9f35, type: 2}
@@ -20,4 +20,4 @@ MonoBehaviour:
   quickSetupControllerNameReplaces:
   - oldValue: _
     newValue: ' -> '
-  defaultAnimationsHideFlags: 0
+  overrideAnimationHideFlags: 0
