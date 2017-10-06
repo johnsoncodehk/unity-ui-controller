@@ -12,9 +12,10 @@ namespace JohnsonCodeHK.OverrideControllerToolsEditor {
 		public AnimatorOverrideControllerInspector() : base("AnimatorOverrideControllerInspector") { }
 
 		private bool quickSetupFlagsFoldOut = true;
+		private Dictionary<string, bool> quickSetupFolderFoldOuts = new Dictionary<string, bool>();
 		private bool mainFoldOut = false;
 		private bool hideFlagsFoldOut = false;
-		private bool moreFoldOut = false;
+		private bool moreFoldOut = true;
 
 		public override void OnInspectorGUI() {
 			base.OnInspectorGUI();
@@ -24,27 +25,42 @@ namespace JohnsonCodeHK.OverrideControllerToolsEditor {
 			if (this.quickSetupFlagsFoldOut = EditorGUILayout.Foldout(this.quickSetupFlagsFoldOut, "Quick Setup")) {
 				EditorGUI.indentLevel++;
 
-				string lastFolder = "";
+				Dictionary<string, List<RuntimeAnimatorController>> qscs = new Dictionary<string, List<RuntimeAnimatorController>>();
 
 				foreach (var controller in OverrideControllerToolsSetting.instance.quickSetupControllers) {
 					if (controller == null) {
 						continue;
 					}
 
-					string folder = System.IO.Path.GetDirectoryName(AssetDatabase.GetAssetPath(controller));
-					if (folder != lastFolder) {
-						EditorGUILayout.LabelField(folder + "/");
-						lastFolder = folder;
+					string folder = System.IO.Path.GetDirectoryName(AssetDatabase.GetAssetPath(controller)).Replace("\\", "/");
+					if (!qscs.ContainsKey(folder)) {
+						qscs[folder] = new List<RuntimeAnimatorController>();
 					}
-
-					this.DrawButton(
-						true,
-						controller.name,
-						() => {
-							overrideController.runtimeAnimatorController = controller;
-							overrideController.CreateOverrideAnimations(overrideController.GetOverridesUnite().FindAll(cp => cp.Value == null).Select(cp => cp.Key).ToArray());
+					qscs[folder].Add(controller);
+				}
+				foreach (var kvp in qscs) {
+					string folder = kvp.Key;
+					if (!this.quickSetupFolderFoldOuts.ContainsKey(folder)) {
+						this.quickSetupFolderFoldOuts[folder] = true;
+					}
+					if (this.quickSetupFolderFoldOuts[folder] = EditorGUILayout.Foldout(this.quickSetupFolderFoldOuts[folder], folder)) {
+						EditorGUI.indentLevel++;
+						foreach (var controller in kvp.Value) {
+							string controllerName = controller.name;
+							foreach (var replace in OverrideControllerToolsSetting.instance.quickSetupControllerNameReplaces) {
+								controllerName = controllerName.Replace(replace.oldValue, replace.newValue);
+							}
+							this.DrawButton(
+								true,
+								controllerName,
+								() => {
+									overrideController.runtimeAnimatorController = controller;
+									overrideController.CreateOverrideAnimations(overrideController.GetOverridesUnite().FindAll(cp => cp.Value == null).Select(cp => cp.Key).ToArray());
+								}
+							);
 						}
-					);
+						EditorGUI.indentLevel--;
+					}
 				}
 				EditorGUI.indentLevel--;
 			}

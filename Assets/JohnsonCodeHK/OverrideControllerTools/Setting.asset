@@ -17,4 +17,7 @@ MonoBehaviour:
   animationNameReplaces:
   - oldValue: Original
     newValue: 
+  quickSetupControllerNameReplaces:
+  - oldValue: _
+    newValue: ' -> '
   defaultAnimationsHideFlags: 0

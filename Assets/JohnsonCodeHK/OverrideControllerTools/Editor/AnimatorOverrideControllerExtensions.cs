@@ -89,6 +89,11 @@ namespace JohnsonCodeHK.OverrideControllerToolsEditor {
 			assetImporter.SaveAndReimport();
 		}
 		public static void CreateOverrideAnimations(this AnimatorOverrideController overrideController, AnimationClip[] originalClips) {
+#if UNITY_5_5 || UNITY_5_4 || UNITY_5_3 || UNITY_5_2 || UNITY_5_1 || UNITY_5_0 || UNITY_4
+			if (OverrideControllerToolsSetting.instance.animationsHideFlags == HideFlags.None) {
+				Debug.LogWarning("Your HideFlag config is None, Unity 5.5.x lower can't display correct asset tree, you should config HideFlag to HideInHierarchy in setting: " + AssetDatabase.GetAssetPath(OverrideControllerToolsSetting.instance));
+			}
+#endif
 			foreach (AnimationClip clip in originalClips) {
 				string overrideClipName = clip.name;
 				foreach (var strReplace in OverrideControllerToolsSetting.instance.animationNameReplaces) {

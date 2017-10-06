@@ -37,8 +37,7 @@ public class UIController : MonoBehaviour {
 			if (!this.animator.isInitialized) {
 				return false;
 			}
-			AnimatorStateInfo currentState = this.animator.GetCurrentAnimatorStateInfo(0);
-			return currentState.IsName("Show") || currentState.IsName("OnShow");
+			return this.animator.GetBool("Is Show");
 		}
 		private set {
 			if (this.animator.runtimeAnimatorController == null) {
@@ -50,12 +49,8 @@ public class UIController : MonoBehaviour {
 				}
 				return;
 			}
-			if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Init")) {
-				this.animator.Play(value ? "Show" : "Hide");
-			}
-			else {
-				this.animator.SetTrigger(value ? "Show" : "Hide");
-			}
+			this.animator.SetBool("Is Show", value);
+			this.animator.SetTrigger("Play");
 		}
 	}
 	public bool isPlaying {
@@ -135,7 +130,7 @@ public class UIController : MonoBehaviour {
 		this.m_DisposableOnShow.RemoveAllListeners();
 	}
 	protected virtual void OnHide() {
-		if (!this.isValidController || !this.animator.GetBool("Show")) {
+		if (!this.isValidController || !this.isShow) {
 			switch (this.onHideAction) {
 				case UIController.OnHideAction.None:
 					break;

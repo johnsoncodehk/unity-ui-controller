@@ -31,7 +31,8 @@ namespace JohnsonCodeHK.UIControllerEditor {
 		void OnValidate() {
 			if (this.transition.exitTime != this.m_Transition.exitTime
 				|| this.transition.duration != this.m_Transition.duration) {
-				this.m_Transition = this.transition;
+				this.m_Transition.exitTime = this.transition.exitTime;
+				this.m_Transition.duration = this.transition.duration;
 				foreach (RuntimeAnimatorController controller in this.controllers) {
 					AnimatorController animator = controller as AnimatorController;
 
@@ -47,6 +48,7 @@ namespace JohnsonCodeHK.UIControllerEditor {
 				}
 			}
 			if (this.transition.canTransitionToSelf != this.m_Transition.canTransitionToSelf) {
+				this.m_Transition.canTransitionToSelf = this.transition.canTransitionToSelf;
 				foreach (RuntimeAnimatorController controller in this.controllers) {
 					AnimatorController animator = controller as AnimatorController;
 					this.SetAnimatorBool(animator, "Can Transition To Self", this.transition.canTransitionToSelf);
@@ -54,8 +56,6 @@ namespace JohnsonCodeHK.UIControllerEditor {
 			}
 		}
 
-		private void UpdateControllerTransition(RuntimeAnimatorController controller) {
-		}
 		private void SetStateTransitions(AnimatorStateTransition transition) {
 			if (transition.conditions.Length == 0) {
 				transition.hasExitTime = true;
@@ -64,13 +64,22 @@ namespace JohnsonCodeHK.UIControllerEditor {
 				transition.duration = 0;
 				return;
 			}
+			foreach (var condition in transition.conditions) {
+				if (condition.parameter == "Init") {
+					transition.hasExitTime = false;
+					transition.exitTime = 0;
+					transition.hasFixedDuration = false;
+					transition.duration = 0;
+					return;
+				}
+			}
 			transition.hasExitTime = this.transition.exitTime > 0;
-			transition.exitTime = this.transition.exitTime > 0 ? this.transition.exitTime : 1;
+			transition.exitTime = this.transition.exitTime > 0 ? this.transition.exitTime : 0;
 			transition.hasFixedDuration = false;
 			transition.duration = this.transition.duration;
 		}
 		private void SetAnimatorBool(AnimatorController animator, string name, bool val) {
-			for(int i = 0; i < animator.parameters.Length; i++) {
+			for (int i = 0; i < animator.parameters.Length; i++) {
 				var par = animator.parameters[i];
 				if (par.name == name) {
 					animator.RemoveParameter(i);
