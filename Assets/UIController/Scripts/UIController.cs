@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
+#if NET_4_6
+using System.Threading.Tasks;
+#endif
 
 [RequireComponent(typeof(Animator))]
 public class UIController : MonoBehaviour {
@@ -123,6 +126,22 @@ public class UIController : MonoBehaviour {
 		}
 		this.Hide();
 	}
+#if NET_4_6
+	public Task ShowAsync() {
+		TaskCompletionSource<int> tsc = new TaskCompletionSource<int>();
+		this.Show(() => {
+			tsc.SetResult(0);
+		});
+		return tsc.Task;
+	}
+	public Task HideAsync() {
+		TaskCompletionSource<int> tsc = new TaskCompletionSource<int>();
+		this.Hide(() => {
+			tsc.SetResult(0);
+		});
+		return tsc.Task;
+	}
+#endif
 
 	protected virtual void OnShow() {
 		this.onShow.Invoke();
