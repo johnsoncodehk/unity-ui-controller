@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
-#if NET_4_6
-using System.Threading.Tasks;
-#endif
 
 [RequireComponent(typeof(Animator))]
 public class UIController : MonoBehaviour {
@@ -12,6 +9,18 @@ public class UIController : MonoBehaviour {
 		None,
 		Disable,
 		Destory,
+	}
+	public class AnimationPlay : CustomYieldInstruction {
+		public override bool keepWaiting {
+			get { return !this.isDone; }
+		}
+		public bool isDone {
+			get;
+			private set;
+		}
+		public void SetCompleted() {
+			this.isDone = true;
+		}
 	}
 
 	public bool showOnAwake = true;
@@ -126,22 +135,16 @@ public class UIController : MonoBehaviour {
 		}
 		this.Hide();
 	}
-#if NET_4_6
-	public Task ShowAsync() {
-		TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
-		this.Show(() => {
-			tcs.SetResult(null);
-		});
-		return tcs.Task;
+	public AnimationPlay ShowAsync() {
+		AnimationPlay play = new AnimationPlay();
+		this.Show(play.SetCompleted);
+		return play;
 	}
-	public Task HideAsync() {
-		TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
-		this.Hide(() => {
-			tcs.SetResult(null);
-		});
-		return tcs.Task;
+	public AnimationPlay HideAsync() {
+		AnimationPlay play = new AnimationPlay();
+		this.Hide(play.SetCompleted);
+		return play;
 	}
-#endif
 
 	protected virtual void OnShow() {
 		this.onShow.Invoke();
