@@ -128,16 +128,16 @@ public class UIController : MonoBehaviour {
 	}
 #if NET_4_6
 	public Task ShowAsync() {
-		TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
+		TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 		this.Show(() => {
-			tcs.SetResult(0);
+			tcs.SetResult(null);
 		});
 		return tcs.Task;
 	}
 	public Task HideAsync() {
-		TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
+		TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 		this.Hide(() => {
-			tcs.SetResult(0);
+			tcs.SetResult(null);
 		});
 		return tcs.Task;
 	}
