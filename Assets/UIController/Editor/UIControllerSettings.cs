@@ -22,8 +22,14 @@ namespace JohnsonCodeHK.UIControllerEditor {
 			[Range(0, 1)] public float exitTime, duration;
 			public bool canTransitionToSelf;
 		}
+		[System.Serializable]
+		public class Inspector {
+			public bool showInfos = false;
+			public bool showButtons = true;
+		}
 
 		public List<RuntimeAnimatorController> controllers = new List<RuntimeAnimatorController>();
 		public Transition transition;
+		public Inspector inspector;
 	}
 }

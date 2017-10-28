@@ -10,6 +10,18 @@ public class UIController : MonoBehaviour {
 		Disable,
 		Destory,
 	}
+	public class AnimationPlay : CustomYieldInstruction {
+		public override bool keepWaiting {
+			get { return !this.isDone; }
+		}
+		public bool isDone {
+			get;
+			private set;
+		}
+		public void SetCompleted() {
+			this.isDone = true;
+		}
+	}
 
 	public bool showOnAwake = true;
 	public OnHideAction onHideAction = OnHideAction.Disable;
@@ -122,6 +134,16 @@ public class UIController : MonoBehaviour {
 			m_DisposableOnHide.AddListener(onHide);
 		}
 		this.Hide();
+	}
+	public AnimationPlay ShowAsync() {
+		AnimationPlay play = new AnimationPlay();
+		this.Show(play.SetCompleted);
+		return play;
+	}
+	public AnimationPlay HideAsync() {
+		AnimationPlay play = new AnimationPlay();
+		this.Hide(play.SetCompleted);
+		return play;
 	}
 
 	protected virtual void OnShow() {
