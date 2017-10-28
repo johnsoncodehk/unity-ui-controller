@@ -10,14 +10,32 @@ namespace JohnsonCodeHK.UIControllerEditor {
 			base.OnInspectorGUI();
 
 			UIController t = this.target as UIController;
-			EditorGUILayout.BeginHorizontal();
-			if (GUILayout.Button("Show")) {
-				t.Show();
+
+			if (UIControllerSettings.instance.inspector.showInfos) {
+				string info = "";
+				info += "Is Show: " + t.isShow;
+				info += "\n" + "Is Playing: " + t.isPlaying;
+				EditorGUILayout.HelpBox(info, MessageType.Info);
 			}
-			if (GUILayout.Button("Hide")) {
-				t.Hide();
+
+			if (UIControllerSettings.instance.inspector.showButtons) {
+				EditorGUILayout.BeginHorizontal();
+				if (GUILayout.Button("Show") && ValidateEditorPlaying()) {
+					t.Show();
+				}
+				if (GUILayout.Button("Hide") && ValidateEditorPlaying()) {
+					t.Hide();
+				}
+				GUI.enabled = false;
+				EditorGUILayout.EndHorizontal();
 			}
-			EditorGUILayout.EndHorizontal();
+		}
+		private static bool ValidateEditorPlaying() {
+			if (!Application.isPlaying) {
+				Debug.Log("Animation can only be play in playing mode.");
+				return false;
+			}
+			return true;
 		}
 	}
 }

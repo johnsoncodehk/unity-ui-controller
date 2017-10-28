@@ -18,3 +18,6 @@ MonoBehaviour:
     exitTime: 0
     duration: 0
     canTransitionToSelf: 1
+  inspector:
+    showInfos: 0
+    showButtons: 1
