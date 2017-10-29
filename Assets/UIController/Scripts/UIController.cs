@@ -10,16 +10,35 @@ public class UIController : MonoBehaviour {
 		Disable,
 		Destory,
 	}
-	public class AnimationPlay : CustomYieldInstruction {
+	public class PlayAsync : CustomYieldInstruction {
+
+		public PlayAsync(UIController controller, bool isShow) {
+			this.m_Obj = controller;
+			this.m_ObjName = controller.ToString();
+
+			if (isShow) {
+				controller.Show(this.OnCompleted);
+			}
+			else {
+				controller.Hide(this.OnCompleted);
+			}
+		}
+
 		public override bool keepWaiting {
-			get { return !this.isDone; }
+			get {
+				if (this.m_Obj == null) {
+					throw new System.Exception(this.m_ObjName + " is be destroy, you can't keep waiting.");
+				}
+				return !this.m_IsDone;
+			}
 		}
-		public bool isDone {
-			get;
-			private set;
-		}
-		public void SetCompleted() {
-			this.isDone = true;
+
+		private UIController m_Obj;
+		private string m_ObjName;
+		private bool m_IsDone;
+
+		private void OnCompleted() {
+			this.m_IsDone = true;
 		}
 	}
 
@@ -135,15 +154,11 @@ public class UIController : MonoBehaviour {
 		}
 		this.Hide();
 	}
-	public AnimationPlay ShowAsync() {
-		AnimationPlay play = new AnimationPlay();
-		this.Show(play.SetCompleted);
-		return play;
+	public PlayAsync ShowAsync() {
+		return new PlayAsync(this, true);
 	}
-	public AnimationPlay HideAsync() {
-		AnimationPlay play = new AnimationPlay();
-		this.Hide(play.SetCompleted);
-		return play;
+	public PlayAsync HideAsync() {
+		return new PlayAsync(this, false);
 	}
 
 	protected virtual void OnShow() {
