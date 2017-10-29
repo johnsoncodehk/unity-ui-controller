@@ -50,8 +50,10 @@
 	- Play "Hide" animation.
 
 ## Code Examples
+
 - Play "Show" animation
 ```csharp
+// No Inheritance
 [RequireComponent(typeof(UIController))]
 public class MyPanel : MonoBehaviour {
 	void Start() {
@@ -60,12 +62,24 @@ public class MyPanel : MonoBehaviour {
 }
 ```
 ```csharp
+// Inheritance
 public class MyPanel : UIController {
 	void Start() {
 		this.Show();
 	}
 }
 ```
+
+- await Animation(need .Net4.6 project)
+```csharp
+public class MyPanel : UIController {
+	async void Start() {
+		await this.ShowAsync();
+		print("Show animation end.");
+	}
+}
+```
+
 - Add "Show" animation end event
 ```csharp
 public class MyPanel : UIController {

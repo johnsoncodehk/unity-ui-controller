@@ -1,3 +1,10 @@
+Version 2.3
+Add:
+- Inspector setting
+- Add ShowAsync & HideAsync
+  - Coroutine support
+  - async/await support(need .Net4.6 project)
+
 Version 2.2.3
 Remove:
 - UIControllerDebugger
