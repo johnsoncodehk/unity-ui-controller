@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using System.Collections;
 
 [RequireComponent(typeof(Animator))]
 public class UIController : MonoBehaviour {
@@ -47,10 +46,9 @@ public class UIController : MonoBehaviour {
 
 	[SerializeField] private UnityEvent m_OnShow = new UnityEvent();
 	[SerializeField] private UnityEvent m_OnHide = new UnityEvent();
-	private UnityEvent m_DisposableOnShow = new UnityEvent();
-	private UnityEvent m_DisposableOnHide = new UnityEvent();
+	private UnityEvent m_OnShowDisposable = new UnityEvent();
+	private UnityEvent m_OnHideDisposable = new UnityEvent();
 	private Animator m_Animator;
-	private Vector3 m_TempSaveScale;
 
 	public UnityEvent onShow {
 		get { return this.m_OnShow; }
@@ -105,7 +103,7 @@ public class UIController : MonoBehaviour {
 	private bool canTransitionToSelf {
 		get {
 			if (!this.isValidController) {
-				return false;
+				return true;
 			}
 			return this.animator.GetBool("Can Transition To Self");
 		}
@@ -124,14 +122,9 @@ public class UIController : MonoBehaviour {
 			}
 			return;
 		}
-		bool activeSelf = this.gameObject.activeSelf;
 
 		this.gameObject.SetActive(true);
 		this.isShow = true;
-
-		if (this.animator.runtimeAnimatorController != null && !activeSelf && this.gameObject.activeInHierarchy) {
-			StartCoroutine(this.SaveAndRevertScale());
-		}
 	}
 	public virtual void Hide() {
 		if (!this.canTransitionToSelf && !this.isShow) {
@@ -144,13 +137,13 @@ public class UIController : MonoBehaviour {
 	}
 	public void Show(UnityAction onShow) {
 		if (onShow != null) {
-			m_DisposableOnShow.AddListener(onShow);
+			m_OnShowDisposable.AddListener(onShow);
 		}
 		this.Show();
 	}
 	public void Hide(UnityAction onHide) {
 		if (onHide != null) {
-			m_DisposableOnHide.AddListener(onHide);
+			m_OnHideDisposable.AddListener(onHide);
 		}
 		this.Hide();
 	}
@@ -161,10 +154,16 @@ public class UIController : MonoBehaviour {
 		return new PlayAsync(this, false);
 	}
 
+	protected virtual void OnEnable() {
+		this.animator.Update(0);
+		if (this.showOnAwake) {
+			this.Show();
+		}
+	}
 	protected virtual void OnShow() {
 		this.onShow.Invoke();
-		this.m_DisposableOnShow.Invoke();
-		this.m_DisposableOnShow.RemoveAllListeners();
+		this.m_OnShowDisposable.Invoke();
+		this.m_OnShowDisposable.RemoveAllListeners();
 	}
 	protected virtual void OnHide() {
 		if (!this.isValidController || !this.isShow) {
@@ -180,19 +179,7 @@ public class UIController : MonoBehaviour {
 			}
 		}
 		this.onHide.Invoke();
-		this.m_DisposableOnHide.Invoke();
-		this.m_DisposableOnHide.RemoveAllListeners();
-	}
-
-	private IEnumerator SaveAndRevertScale() {
-		if (this.transform.localScale != Vector3.zero) {
-			this.m_TempSaveScale = this.transform.localScale;
-			this.transform.localScale = Vector3.zero;
-		}
-		yield return new WaitForEndOfFrame();
-		if (this.m_TempSaveScale != Vector3.zero) {
-			this.transform.localScale = this.m_TempSaveScale;
-			this.m_TempSaveScale = Vector3.zero;
-		}
+		this.m_OnHideDisposable.Invoke();
+		this.m_OnHideDisposable.RemoveAllListeners();
 	}
 }

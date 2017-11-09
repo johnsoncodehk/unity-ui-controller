@@ -1,3 +1,9 @@
+Version 2.3.1
+Fix:
+- Sometimes animation delay one frame to start
+Change:
+- OnEnable using now, please override OnEnable if you inheritance UIController, and call base.OnEnable
+
 Version 2.3
 Add:
 - Inspector setting
