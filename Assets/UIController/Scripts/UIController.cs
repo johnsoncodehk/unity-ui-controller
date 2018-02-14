@@ -7,7 +7,7 @@ public class UIController : MonoBehaviour {
 	public enum OnHideAction {
 		None,
 		Disable,
-		Destory,
+		Destroy,
 	}
 	public class PlayAsync : CustomYieldInstruction {
 
@@ -173,7 +173,7 @@ public class UIController : MonoBehaviour {
 				case UIController.OnHideAction.Disable:
 					this.gameObject.SetActive(false);
 					break;
-				case UIController.OnHideAction.Destory:
+				case UIController.OnHideAction.Destroy:
 					Destroy(this.gameObject);
 					break;
 			}

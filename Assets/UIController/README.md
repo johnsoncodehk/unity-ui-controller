@@ -25,7 +25,7 @@
 	- A enum value of action to on hide
 	- None: No action.
 	- Disable: Disable GameObject.
-	- Destory: Destory GameObject.
+	- Destroy: Destroy GameObject.
 - isShow
 	- A bool value of state.
 	- true: "Show" animation playing or end.
