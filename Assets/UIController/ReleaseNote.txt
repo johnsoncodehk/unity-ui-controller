@@ -1,3 +1,11 @@
+Version 2.5
+Fix:
+- 拼寫錯誤: Destory => Destroy
+- GameObject隱藏時調用Show, 觸發了2次Show
+- 沒有設置Controller時, isShow值錯誤
+- 如有設置過渡, 並且播放Hide中途調用Show, OnHide被觸發(Pro only)
+- 如勾選Show Infos並且缺失Animator component時不斷產生警告(Pro only)
+
 Version 2.4
 Add:
 - Add AssetInspector(Pro Only)

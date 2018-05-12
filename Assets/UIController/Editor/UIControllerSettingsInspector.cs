@@ -12,13 +12,28 @@ namespace JohnsonCodeHK.UIControllerEditor {
 			GUI.enabled = true;
 			GUILayout.Label("");
 
-			string info = "Version: 2.4";
-			info += "\n" + "License: Free";
-			info += "\n" + "";
-			info += "\n" + "This free version already contains most of the features, and the full version of the difference just is can use settings, so if you buy the full version, a greater degree is to give me support!";
+			string version = "2.5";
+			bool isPro = false;
+
+			string info = "Version: " + version;
+			info += "\n" + "License: " + (isPro ? "Pro" : "Free");
+			info += "\n" + "Support Email: johnsoncodehk+support@gmail.com";
+			if (!isPro) {
+				info += "\n" + "";
+				info += "\n" + "This free version already contains most of the features, if you like this plugin, you can buy the pro version to give a support.";
+				info += "\n" + "";
+				info += "\n" + "If you have create anything (game/example video...) using UIController, and share to Asset Store comment area. Please send me an email, I will give you a pro version voucher.";
+			}
 			EditorGUILayout.HelpBox(info, MessageType.Info);
-			if (GUILayout.Button("Get Full Version")) {
-				System.Diagnostics.Process.Start("http://u3d.as/xWy");
+			if (!isPro) {
+				EditorGUILayout.BeginHorizontal();
+				if (GUILayout.Button("Get Pro Version")) {
+					System.Diagnostics.Process.Start("http://u3d.as/xWy");
+				}
+				if (GUILayout.Button("Write Comment")) {
+					System.Diagnostics.Process.Start("http://u3d.as/B5u");
+				}
+				EditorGUILayout.EndHorizontal();
 			}
 		}
 	}

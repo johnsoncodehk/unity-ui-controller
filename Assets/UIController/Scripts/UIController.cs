@@ -61,7 +61,7 @@ public class UIController : MonoBehaviour {
 	public bool isShow {
 		get {
 			if (this.animator.runtimeAnimatorController == null) {
-				return this.gameObject.activeSelf;
+				return this.isShowWhenNoController;
 			}
 			if (!this.animator.isInitialized) {
 				return false;
@@ -70,6 +70,7 @@ public class UIController : MonoBehaviour {
 		}
 		private set {
 			if (this.animator.runtimeAnimatorController == null) {
+				this.isShowWhenNoController = value;
 				if (value) {
 					this.OnShow();
 				}
@@ -84,7 +85,10 @@ public class UIController : MonoBehaviour {
 	}
 	public bool isPlaying {
 		get {
-			if (!this.isValidController) {
+			if (this.animator.runtimeAnimatorController == null) {
+				return false;
+			}
+			if (!this.animator.isInitialized) {
 				return false;
 			}
 			AnimatorStateInfo currentState = this.animator.GetCurrentAnimatorStateInfo(0);
@@ -102,17 +106,17 @@ public class UIController : MonoBehaviour {
 	}
 	private bool canTransitionToSelf {
 		get {
-			if (!this.isValidController) {
+			if (this.animator.runtimeAnimatorController == null) {
+				return true;
+			}
+			if (!this.animator.isInitialized) {
 				return true;
 			}
 			return this.animator.GetBool("Can Transition To Self");
 		}
 	}
-	private bool isValidController {
-		get {
-			return this.animator.runtimeAnimatorController != null && this.animator.isInitialized;
-		}
-	}
+	private bool isShowWhenNoController;
+	private int lastShowAtFrame = 0;
 
 	// Show/Hide must fast by Show(UnityAction)Hide(UnityAction), make SendMessage("Show/Hide") working in Inspector
 	public virtual void Show() {
@@ -123,7 +127,10 @@ public class UIController : MonoBehaviour {
 			return;
 		}
 
-		this.gameObject.SetActive(true);
+		if (!this.gameObject.activeSelf) {
+			this.lastShowAtFrame = Time.frameCount;
+			this.gameObject.SetActive(true);
+		}
 		this.isShow = true;
 	}
 	public virtual void Hide() {
@@ -156,9 +163,10 @@ public class UIController : MonoBehaviour {
 
 	protected virtual void OnEnable() {
 		this.animator.Update(0);
-		if (this.showOnAwake) {
+		if (this.showOnAwake && Time.frameCount != this.lastShowAtFrame) {
 			this.Show();
 		}
+		this.lastShowAtFrame = 0;
 	}
 	protected virtual void OnShow() {
 		this.onShow.Invoke();
@@ -166,17 +174,16 @@ public class UIController : MonoBehaviour {
 		this.m_OnShowDisposable.RemoveAllListeners();
 	}
 	protected virtual void OnHide() {
-		if (!this.isValidController || !this.isShow) {
-			switch (this.onHideAction) {
-				case UIController.OnHideAction.None:
-					break;
-				case UIController.OnHideAction.Disable:
-					this.gameObject.SetActive(false);
-					break;
-				case UIController.OnHideAction.Destroy:
-					Destroy(this.gameObject);
-					break;
-			}
+		switch (this.onHideAction) {
+			case UIController.OnHideAction.None:
+				break;
+			case UIController.OnHideAction.Disable:
+				this.gameObject.SetActive(false);
+				this.animator.Rebind();
+				break;
+			case UIController.OnHideAction.Destroy:
+				Destroy(this.gameObject);
+				break;
 		}
 		this.onHide.Invoke();
 		this.m_OnHideDisposable.Invoke();

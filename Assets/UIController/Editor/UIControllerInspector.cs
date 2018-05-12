@@ -10,6 +10,16 @@ namespace JohnsonCodeHK.UIControllerEditor {
 			base.OnInspectorGUI();
 
 			UIController t = this.target as UIController;
+			Animator animator = t.GetComponent<Animator>();
+
+			if (!animator) {
+				EditorGUILayout.HelpBox("Animator missing!", MessageType.Warning);
+				return;
+			}
+
+			if (!animator.runtimeAnimatorController && t.onHideAction == UIController.OnHideAction.None) {
+				EditorGUILayout.HelpBox("Do not do anything when hidden, because have no Animator Controller and On Hide Action is None.", MessageType.Warning);
+			}
 
 			if (UIControllerSettings.instance.inspector.showInfos) {
 				string info = "";

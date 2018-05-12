@@ -14,7 +14,9 @@ public class UIControllerStateMachine : StateMachineBehaviour {
 				animator.SendMessage("OnShow");
 			}
 			else if (stateInfo.IsName("Hide")) {
-				animator.SendMessage("OnHide");
+				if (!animator.GetBool("Is Show")) {
+					animator.SendMessage("OnHide");
+				}
 			}
 		}
 		this.normalizedTimes[stateInfo.fullPathHash] = stateInfo.normalizedTime;
