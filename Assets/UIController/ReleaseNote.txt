@@ -1,3 +1,7 @@
+Version 2.6
+- Merge Pro version
+- Move AssetInspector to GitHub: https://github.com/johnsoncodehk/unity-asset-inspector
+
 Version 2.5
 Fix:
 - 拼寫錯誤: Destory => Destroy

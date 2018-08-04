@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace JohnsonCodeHK.UIControllerEditor {
+namespace UIControllerEditor {
 
 	[CanEditMultipleObjects, CustomEditor(typeof(UIController), true)]
 	public class UIControllerInspector : Editor {

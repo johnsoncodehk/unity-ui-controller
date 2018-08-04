@@ -4,7 +4,7 @@ using UnityEditor.Animations;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JohnsonCodeHK.OverrideControllerToolsEditor {
+namespace OverrideControllerToolsEditor {
 
 	[CanEditMultipleObjects, CustomEditor(typeof(AnimatorOverrideController))]
 	public class AnimatorOverrideControllerInspector : DecoratorEditor {
@@ -15,7 +15,6 @@ namespace JohnsonCodeHK.OverrideControllerToolsEditor {
 		private Dictionary<string, bool> quickSetupFolderFoldOuts = new Dictionary<string, bool>();
 		private bool mainFoldOut = false;
 		private bool hideFlagsFoldOut = false;
-		private bool moreFoldOut = true;
 
 		public override void OnInspectorGUI() {
 			base.OnInspectorGUI();
@@ -110,18 +109,6 @@ namespace JohnsonCodeHK.OverrideControllerToolsEditor {
 						HideFlags.HideInHierarchy.ToString(),
 						() => {
 							overrideController.SetAnimationsHideFlags(HideFlags.HideInHierarchy);
-						}
-					);
-					EditorGUI.indentLevel--;
-				}
-				if (this.moreFoldOut = EditorGUILayout.Foldout(this.moreFoldOut, "More...")) {
-					EditorGUI.indentLevel++;
-					string url = "http://u3d.as/U4e";
-					this.DrawButton(
-						true,
-						"Asset Inspector - " + url,
-						() => {
-							System.Diagnostics.Process.Start(url);
 						}
 					);
 					EditorGUI.indentLevel--;

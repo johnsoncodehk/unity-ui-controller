@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace JohnsonCodeHK.OverrideControllerToolsEditor {
+namespace OverrideControllerToolsEditor {
 
 	public enum AnimationsHideFlags {
 		None,

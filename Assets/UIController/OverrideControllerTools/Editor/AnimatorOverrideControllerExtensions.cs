@@ -4,7 +4,7 @@ using UnityEditor.Animations;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace JohnsonCodeHK.OverrideControllerToolsEditor {
+namespace OverrideControllerToolsEditor {
 
 	public static class AnimatorOverrideControllerExtensions {
 

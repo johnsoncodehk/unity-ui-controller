@@ -52,11 +52,9 @@ public class UIController : MonoBehaviour {
 
 	public UnityEvent onShow {
 		get { return this.m_OnShow; }
-		private set { this.m_OnShow = value; }
 	}
 	public UnityEvent onHide {
 		get { return this.m_OnHide; }
-		private set { this.m_OnHide = value; }
 	}
 	public bool isShow {
 		get {
@@ -116,7 +114,7 @@ public class UIController : MonoBehaviour {
 		}
 	}
 	private bool isShowWhenNoController;
-	private int lastShowAtFrame = 0;
+	private int lastShowAtFrame = -1;
 
 	// Show/Hide must fast by Show(UnityAction)Hide(UnityAction), make SendMessage("Show/Hide") working in Inspector
 	public virtual void Show() {
@@ -162,11 +160,11 @@ public class UIController : MonoBehaviour {
 	}
 
 	protected virtual void OnEnable() {
-		this.animator.Update(0);
+		// this.animator.Update(0);
 		if (this.showOnAwake && Time.frameCount != this.lastShowAtFrame) {
 			this.Show();
 		}
-		this.lastShowAtFrame = 0;
+		this.lastShowAtFrame = -1;
 	}
 	protected virtual void OnShow() {
 		this.onShow.Invoke();
@@ -175,13 +173,13 @@ public class UIController : MonoBehaviour {
 	}
 	protected virtual void OnHide() {
 		switch (this.onHideAction) {
-			case UIController.OnHideAction.None:
+			case OnHideAction.None:
 				break;
-			case UIController.OnHideAction.Disable:
+			case OnHideAction.Disable:
 				this.gameObject.SetActive(false);
 				this.animator.Rebind();
 				break;
-			case UIController.OnHideAction.Destroy:
+			case OnHideAction.Destroy:
 				Destroy(this.gameObject);
 				break;
 		}
