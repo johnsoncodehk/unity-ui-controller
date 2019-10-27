@@ -45,22 +45,6 @@ public class UIController : MonoBehaviour
                 return animator.GetBool("Is Show") ? State.OnShow : State.OnHide;
         }
     }
-    public bool isShow
-    {
-        get
-        {
-            State state = currentState;
-            return state == State.Show || state == State.OnShow;
-        }
-    }
-    public bool isPlaying
-    {
-        get
-        {
-            State state = currentState;
-            return state == State.Show || state == State.Hide;
-        }
-    }
     public Animator animator
     {
         get
