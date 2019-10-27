@@ -1,0 +1,10 @@
+{
+    "name": "com.johnsoncodehk.unity-ui-controller",
+    "displayName": "UI Controller",
+    "version": "3.0.0",
+    "unity": "5.6",
+    "description": "",
+    "dependencies": {
+        "com.johnsoncodehk.unity-animator-override-controller-extras": "https://github.com/johnsoncodehk/unity-animator-override-controller-extras.git"
+    }
+}
