@@ -14,7 +14,7 @@ public class UIController : MonoBehaviour
         OnHide,
     }
 
-    public State defaultState = State.OnShow;
+    public State defaultState = State.None;
 
     [SerializeField] private UnityEvent m_Show = new UnityEvent();
     [SerializeField] private UnityEvent m_OnShow = new UnityEvent();
