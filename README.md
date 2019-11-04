@@ -11,7 +11,7 @@ The following lines needs to be added to your Packages/manifest.json file in you
 
 ### v3 VS v2(last AssetStore version)
 
-(v2 can still download in the asset-store branch)
+(v2 can still download in [here](https://github.com/johnsoncodehk/unity-ui-controller/archive/asset-store.zip))
 
 The main change in v3 is no longer assumed the use case, such as automatically activating GameObject when Show, or automatically disabling GameObject when OnHide.
 
